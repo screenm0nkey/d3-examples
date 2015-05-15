@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Range Scales</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+</head>
+<body>
+<h1>http://alignedleft.com/tutorials/d3/scales</h1>
+<a href="http://bost.ocks.org/mike/bar/3/">http://bost.ocks.org/mike/bar/3/</a>
+<a href="/bar-chart"></a>
+<script>
+    var data = [4, 8, 15, 16, 23, 42];
+    var height = 420;
+    var width = height;
+
+    // ORDINAL
+    // these have a direct mapping from letters to numbers
+    var range = d3.scale.ordinal()
+            .domain(["A", "B", "C", "D", "E", "F"])
+            .range([12, 5, 2, 13, 4, 5]);
+    console.log(range('C')) //2
+
+    // 300/6. 6 is the data length. each value is 50 starting with A = 0;
+    // If width is 960, x("A") is now 0 and x("B") is 160, and so on.
+    // These positions serve as the left edge of each bar, while x.rangeBand() returns the width of each bar.
+    var rangeBands = d3.scale.ordinal()
+            .domain(["A", "B", "C", "D", "E", "F"])
+            .rangeBands([0, 300]);
+    console.log(1, rangeBands('B')); //100 or 300/6 * 2
+
+
+    var x = d3.scale.ordinal()
+            .domain(["A", "B", "C", "D", "E", "F"])
+            .rangeBands([0, width])
+    console.log(x("D")) //210 which is 420/6 * 4
+
+
+    var rangeRoundBands = d3.scale.ordinal()
+            .domain(["A", "B", "C", "D", "E", "F"])
+            .rangeRoundBands([0, 300], .9);
+    console.log(rangeRoundBands('C')) //126
+
+
+    // LINEAR
+    // 420/42 = 10;  x(4) = (4*10) = 40;
+    var x = d3.scale.linear()
+            .domain([0, d3.max(data)])
+            .range([0, width]);
+
+    // 420/10 = 10; x(y) = 420 - (4*10) = 380;
+    var y = d3.scale.linear()
+            .domain([0, d3.max(data)])
+            .range([height, 0]);
+
+
+</script>
+</body>
+</html>

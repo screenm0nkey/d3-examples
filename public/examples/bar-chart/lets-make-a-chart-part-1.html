@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>First d3</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+    <style>
+
+        .chart div {
+            font: 10px sans-serif;
+            background-color: steelblue;
+            text-align: right;
+            padding: 3px;
+            margin: 1px;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+<a href="/bar-chart"></a>
+<a href="http://bost.ocks.org/mike/bar/">http://bost.ocks.org/mike/bar/</a>
+
+<div class="chart"></div>
+
+<script>
+    var data = [4, 8, 15, 16, 23, 42];
+
+    var x = d3.scale.linear()
+            .domain([0, d3.max(data)])
+            .range([0, 420]);
+
+
+    // max range value / max domain value i.e. 420/42 = 10.
+    // there is a direct relation between the domain data and the range. in this example
+    // our domain goes from 0 to 42, 42 being our max value. the range goes from 0 to 420
+    // so if we divide 420/42 = 10. so each unit in our domain is a multiple of 10 i.e.
+    // domain 4 = 40 range
+    // domain 8 = 80 range
+    d3.select(".chart")
+            .selectAll("div")
+            .data(data)
+            .enter()
+            .append("div")
+            .style("width", function(d) { return x(d) + "px"; })
+            .text(function(d) { return d; });
+</script>
+
+</body>
+</html>

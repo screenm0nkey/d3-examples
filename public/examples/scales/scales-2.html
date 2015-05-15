@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Joins</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script src="/lib/lodash/lodash.js"></script>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+    <style>
+        svg {background: lightgray}
+        circle { fill-opacity: 0.5}
+        .circle1 { fill: darkblue}
+        .circle2 { fill: orange}
+        .circle3 { fill: green}
+    </style>
+</head>
+<body>
+<a href="/joins"></a>
+<p></p>
+<svg width="700" height="700">
+    <text></text>
+</svg>
+
+<script>
+
+
+        // generate an randon array between 1 and 7 contain random numbers between 1,10
+        var random = _.random(1,50);
+        // _.times generates and array i.e. _.times(3) = [1,2,3]
+        var  datax = _.times(random, _.partial(_.random, 100, 500, false));
+        var  datay = _.times(random, _.partial(_.random, 100, 500, false));
+        var  datar = _.times(random, _.partial(_.random, 1, 10, false));
+        var data = _.zip(datax, datay, datar);
+
+        var width = 700;
+        var height = 700;
+        var padding = 30;
+
+
+        var xScale = d3.scale.linear()
+                .domain([100, d3.max(data, function(d) { return d[0];})])
+                .range([padding, width - padding]);
+
+        var yScale = d3.scale.linear()
+                .domain([100, d3.max(data, function(d) { return d[1];})])
+                .range([height-padding, padding]);
+
+        var rScale = d3.scale.linear()
+                .domain([1, d3.max(data, function(d) { return d[2];})])
+                .range([2, padding]);
+
+
+
+
+        d3.select('svg')
+                .selectAll('text')
+                .text(data.length)
+                .attr('dy', '0.35em')
+                .attr('x', 10)
+                .attr('y',10);
+
+
+        var circles = d3.select('svg')
+                .selectAll("circle")
+                .data(data);
+
+
+        // Enter (new items)
+        circles.enter().append("circle")
+                .attr({
+                    r   : function (d) { return rScale(d[2]); },
+                    cx  : function (d) { return xScale(d[0]); },
+                    cy  : function (d) { return yScale(d[1]); },
+                    fill: function (d) { return "rgb("+ (d[0]/2) +", 0, " + (d[1]/2) + ")"; },
+                });
+
+
+        // Exit (remove spares)
+        circles.exit().remove();
+
+
+
+
+</script>
+</body>
+</html>

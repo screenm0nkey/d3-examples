@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D3 - Data Driven Documents</title>
+    <script type="text/javascript" src="/d3/app/lib/d3/d3.min.js"></script>
+    <script src="/d3/app/lib/lodash.js"></script>
+    <style type="text/css">
+
+        body {
+            padding-top: 50px;
+            padding-left: 100px;
+        }
+
+        #chartArea {
+            width: 400px;
+            height: 300px;
+            background-color: #CCC;
+        }
+
+        .bar {
+            display: inline-block;
+            width: 20px;
+            height: 75px; /* Gets overriden by D3-assigned height below */
+            margin-right: 2px;
+            fill: teal;
+        }
+
+    </style>
+</head>
+<body>
+<div id="chartArea"></div>
+<script type="text/javascript">
+
+    var dataset = _.map(_.range(20), function (i) {
+        // these will be used as Y values
+        return Math.random() * 30;
+    });
+    var barHeights = 9;
+    var height = 300;
+    var width = 400;
+
+
+    var svg = d3.select('#chartArea').append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+    // min y value = 0
+    // max y value is the height of the largest dataset
+    var dMin =  0;
+    var dMax = d3.max(dataset)
+    var yPaddingTop = 10;
+    var yScale = d3.scale.linear()
+        // domain is min/max height you want displayed. in ours, as max is 30, we
+            // set the max to 20 then a lot of the bars would be displayed off the top
+            // of the chart.
+            .domain([dMin,  dMax])
+            // range is the min and max on the Y axis. so if you set the height as height/2
+            // and the bars will only go half way up the chart
+            .range([0, height-yPaddingTop]);
+
+    // try removing the 3rd and 4th values below on the xScale and see what happens
+    var xScale = d3.scale.ordinal()
+            .domain(dataset)
+            // 1st value is where is starts from the left
+            // 2nd value is the max width of all columns
+            // 3rd value is the distance between columns
+            // 4th value is left/right padding.
+            .rangeBands([0, width], 0.1, 0.5);
+
+    svg.selectAll('rect')
+            .data(dataset)
+            .enter()
+            .append('rect')
+            .attr('class', 'bar')
+            // positions the bars from left to right
+            .attr('x', function (d) {
+                return xScale(d);
+            })
+            .attr('y', function (d) {
+                // this puts the chart on the bottom of the page.
+                // comment it out to see what happens
+                return height - yScale(d);
+            })
+            .attr('width', xScale.rangeBand())
+            .attr('height', function (d) {
+                return yScale(d);
+            });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Appending</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+    <style>
+        p:last-child {color : greenyellow}
+        span { color : pink}
+    </style>
+</head>
+<body>
+<a href="/joins"></a>
+<h3>http://d3js.org/#enter-exit</h3>
+
+<h3>Enter selection represents new data for which there was no existing element.</h3>
+
+<p>1 nick</p>
+<p>2 lowman</p>
+<p>3 liz</p>
+<p>4 lowman</p>
+<p>5 pixie</p>
+
+<script>
+    // this will add "6 lowman" to the end of the list as there are already 5 "p" tags
+    // but there are 6 values in the array. It does this by using enter()
+    var p = d3.select("body")
+            .selectAll("p")
+            .data([4, 8, 15, 16, 23, 42]);
+
+    // Enter.
+    // Will append a new P tag
+    p.enter()
+            .append("p")
+            .text(function (d) {
+                return d + " lowman";
+            });
+
+    // Update
+    // this appends the results to all of them
+    p.append("span")
+    .text(function (d) {
+        return "...I'm with I’m number " + d + "!";
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D3 - Data Driven Documents</title>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+    <script src="/lib/lodash/lodash.min.js"></script>
+    <style type="text/css">
+
+        body {
+            padding-top: 50px;
+            padding-left: 100px;
+        }
+
+        #chartArea {
+            width: 400px;
+            height: 300px;
+            background-color: #CCC;
+        }
+
+        .bar {
+            display: inline-block;
+            width: 20px;
+            height: 75px; /* Gets overriden by D3-assigned height below */
+            margin-right: 2px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="chartArea"></div>
+<script type="text/javascript">
+
+    var dataset = _.map(_.range(30), function (i) {
+        // these will be used as Y values
+        return Math.random() * 30;
+    });
+    var barHeights = 9;
+    var height = 300;
+    var width = 400;
+
+
+    var svg = d3.select('#chartArea').append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+    var dMin =  0;
+    var dMax = d3.max(dataset)
+    var yPaddingTop = 10;
+    var yScale = d3.scale.linear()
+            .domain([dMin,  dMax])
+            .range([0, height-yPaddingTop]);
+
+    var colourScale = d3.scale.linear()
+            .domain([0,  dMax])
+            .range(['orange', 'purple']);
+
+    var xScale = d3.scale.ordinal()
+            .domain(dataset)
+            .rangeBands([0, width], 0.1, 0.5);
+
+    svg.selectAll('rect')
+            .data(dataset)
+            .enter()
+            .append('rect')
+            .attr('class', 'bar')
+            .attr('x', xScale)
+            .attr('y', function (d) {
+                return height - yScale(d);
+            })
+            .attr('width', xScale.rangeBand())
+            .attr('height', yScale)
+            .attr('fill', function(d, i){
+                // try replacing d for i or any numeric value
+                return colourScale(d)
+
+            });
+
+
+</script>
+</body>
+</html>

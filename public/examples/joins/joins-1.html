@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>First d3</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+</head>
+<body> <a href="/joins"></a>
+
+<section>
+    <p>1</p>
+    <p>2</p>
+    <p>3</p>
+</section>
+
+<script>
+
+    var p = d3.select("section").selectAll("p")
+            .data([4, 8, 15, 17]);
+
+    // Update…
+    p.text(function(d){ return d})
+            .append('span')
+            .text(' - Update')
+
+
+    // Enter… (new items)
+    p.enter().append("p")
+            .text(function(d){ return d})
+            .append('span')
+            .text(' - Enter')
+
+    // Exit…
+    p.exit().remove();
+</script>
+</body>
+</html>

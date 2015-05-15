@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>test</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+    <style>
+        .axis text {
+            font: 10px sans-serif;
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .x.axis path {
+            /*display: none;*/
+        }
+    </style>
+</head>
+<body>
+<a href="/bar-chart"></a>
+
+
+<svg class="chart"></svg>
+
+<script>
+    var margin = {top: 20, right: 30, bottom: 30, left: 40};
+    var width = 700 - margin.left - margin.right;
+    var height = 400 - margin.top - margin.bottom;
+
+    var yScale = d3.scale.linear().range([height, 0]);
+    var yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+    var xScale = d3.scale.ordinal().rangeRoundBands([0, width],0.1);
+    var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+    // chart will equal the appended g element
+    var chart = d3.select('.chart')
+            .attr('width',  width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    function type(d) {
+        d.value = +d.value;
+        return d;
+    }
+
+    d3.tsv('/data/alphabet.tsv', type, function (error, data) {
+
+        yScale.domain([0, d3.max(data, function(d){ return d.value; })]);
+        xScale.domain(data.map(function(d){ return d.name }));
+
+        chart.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', "translate(0," + (height + 4) + ')')
+                .call(xAxis);
+
+
+        chart.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis);
+
+        chart.selectAll('.bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar')
+                .attr('x', function(d){ return xScale(d.name)})
+                .attr('y', function(d){ return yScale(d.value)})
+                .attr('height', function(d){ return height - yScale(d.value)})
+                .attr('width', xScale.rangeBand());
+
+
+
+
+
+
+
+
+    })
+
+
+</script>
+
+</body>
+</html>

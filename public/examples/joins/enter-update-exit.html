@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Removing elements</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+</head>
+<body>
+<a href="/joins"></a>
+<a href="http://nrecursions.blogspot.in/2014/12/getting-your-head-around-d3js-part2.html">site</a>
+<div class="links">
+    <br/><a href="#" id="refresh">Create circles</a>
+    <br/><a href="#" id="remove1">Remove 1</a>
+    <br/><a href="#" id="remove2">Remove 2</a>
+    <br/><a href="#" id="remove3">Remove 3</a>
+</div>
+
+
+<script>
+    d3.select("body").style("background-color", "lightgoldenrodyellow");
+    var largeData = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10"];
+    var smallData  = ["c1", "c2", "c3", "c4", "c5", "c9", "c10"];
+    var svgHolder;
+
+    // create data
+    document.getElementById('refresh').addEventListener('click', function (evt) {
+        if (svgHolder) {svgHolder.remove();}
+
+        svgHolder = d3.select("body")
+                .append("svg")
+                .attr("width", 700)
+                .attr("height", 500);
+
+        svgHolder.selectAll("circle")
+                .data(largeData)
+                .enter()
+                .append("circle") //add an svg circle
+                .attr("id", function(d) {return d;})
+                .attr("cx", function(d,i) {return (i+1)*50;})
+                .attr("cy", 110)
+                .attr("r", function(d,i) {return (i+1)*10;})
+                .attr("stroke", "black")
+                .attr("stroke-width", "3")
+                .attr("fill", "blue")
+
+    });
+
+    // this will remove the first 7 circles from the start of the selection.
+    // d3 will select all the circles, of which there are 10 and then use the
+    // exitData of which there are 7 and carry about the remove command on the
+    // first 7 circles, which is not what we want.
+    document.getElementById('remove1').addEventListener('click', function (evt) {
+        svgHolder.selectAll("circle")
+                .data(smallData)
+                .remove('circle');
+    });
+
+    // this will remove the last three elements. d3 will select the 10 circles in the
+    // svgHolder. it will then use the exitData to work on the first 7 elements.
+    // we can tell this becuase we turn them pink. we then call exit() which
+    // instructs D3 to remove any elements which are not accounted for in the array.
+    document.getElementById('remove2').addEventListener('click', function (evt) {
+        svgHolder.selectAll("circle")
+                .data(smallData)
+                .attr("fill", "pink")
+                .exit()
+                .remove("circle");
+    });
+
+    // Noticed something else? When using just remove(), the first 7 circles got removed.
+    // When using it with exit(), the last 3 circles got removed. Both functions were not
+    // able to recognize that we had actually removed circles in-between. ie: circles "c6", "c7" and "c8".
+    // To make d3 recognize which array value changed, you just have to supply an extra identity parameter to data().
+    document.getElementById('remove3').addEventListener('click', function (evt) {
+        svgHolder.selectAll("circle")
+                .data(smallData, function(d) {return d; })
+                .style("fill", "purple")
+                .exit()
+                .remove("circle");
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>First d3</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+
+    <style>
+        .special {
+            background-color: rosybrown;
+        }
+    </style>
+</head>
+<body>
+<a href="/basics"></a>
+
+<section></section>
+
+<script>
+    var section = d3.selectAll("section");
+
+    section.attr("class", "special")
+            .append("span")
+            .html("Hello, world!")
+            .style('fill', 'red')
+
+
+
+    section.append("div")
+            .html("First!");
+
+    section.append("div")
+            .html("Second.");
+
+</script>
+</body>
+</html>

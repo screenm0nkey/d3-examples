@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title> Enter Exit</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+</head>
+<body> <a href="/joins"></a>
+<h3>See notes in enter-exit-removing.html</h3>
+<a href="http://nrecursions.blogspot.in/2014/12/getting-your-head-around-d3js-part2.html">site</a>
+
+<br/><a href="#" id="remove1">Select without exit()</a>
+<br/><a href="#" id="remove2">Select with exit()</a>
+<br/><a href="#" id="remove3">A more accurate exit() </a>
+
+<div class="holder"></div>
+
+<script>
+    d3.select("body").style("background-color", "lightgoldenrodyellow");
+    var enterData = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10"];
+    var data  = ["c1", "c2", "c3", "c4", "c5", "c9", "c10"];
+    var svgHolder;
+
+    // create data
+    function createCircles (evt) {
+        if (svgHolder) {
+            svgHolder.remove();
+        }
+
+        svgHolder = d3.select(".holder")
+                .append("svg")
+                .attr("width", 700)
+                .attr("height", 500);
+
+        svgHolder.selectAll("circle")
+                .data(enterData)
+                .enter()
+                .append("circle") //add an svg circle
+                .attr("id", function(d) {return d;})
+                .attr("cx", function(d,i) {return (i+1)*50;})
+                .attr("cy", 110)
+                .attr("r", function(d,i) {return (i+1)*10;})
+                .attr("stroke", "black")
+                .attr("stroke-width", "3")
+                .attr("fill", "blue")
+
+    };
+
+    // transition and duration has to go after data command and before style changes
+    document.getElementById('remove1').addEventListener('click', function (evt) {
+        createCircles();
+        svgHolder.selectAll("circle")
+                .data(data)
+                .transition()
+                .duration(750)
+                .attr("fill", "gold")
+    });
+
+    // this will colour the last three elements
+    document.getElementById('remove2').addEventListener('click', function (evt) {
+        createCircles();
+        svgHolder.selectAll("circle")
+                .data(data)
+                .exit()
+                .transition()
+                .duration(750)
+                .attr("fill", "pink");
+    });
+
+    document.getElementById('remove3').addEventListener('click', function (evt) {
+        createCircles();
+        svgHolder.selectAll("circle")
+                .data(data, function(d) {return d; })
+                .attr("fill", "purple")
+                .exit()
+                .transition()
+                .duration(750)
+                .attr("fill", "goldenrod");
+    });
+
+</script>
+</body>
+</html>

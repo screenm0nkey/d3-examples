@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Lets make part 4</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+</head>
+<body>
+<a href="/bar-chart"></a>
+<a href="http://bost.ocks.org/mike/bar/3/">http://bost.ocks.org/mike/bar/3</a><br/>
+<h3>This is the same as <a href="lets-make-a-chart-part-3.html">part 3</a> but uses differnt, incorrect linear scale. see part 3 for the correct scale</h3>
+
+<svg class="chart"></svg>
+
+<script>
+    var width = 960;
+    var height = 500;
+
+    var x = d3.scale.linear()
+            .range([0, height]);
+
+    var chart = d3.select('.chart')
+            .attr('width', width)
+            .attr('height', height);
+
+    function type(d) {
+        d.value = +d.value; // coerce to number
+        return d;
+    }
+
+    d3.tsv("/data/alphabet.tsv", type, function (error, data) {
+        var barWidth = width / data.length;
+
+        x.domain([0, d3.max(data, function(d) {
+            return d.value;
+        })]);
+
+        // notice how these bars are inside a SVG group item.
+        var bar = chart.selectAll('g')
+                .data(data)
+                .enter()
+                .append('g')
+                .attr('transform', function (d, i) {
+                    return "translate(" + i * barWidth + ",0)";
+                });
+
+        bar.append('rect')
+                .attr('y', function(d){ return height - x(d.value) })
+                .attr('height', function(d){ return x(d.value); })
+                .attr('width', barWidth-1);
+
+        bar.append('text')
+                .attr('y', function(d){ return y(d.value) +3 })
+                .attr('x', barWidth/2)
+                .attr('dy', "0.75em")
+                .text(function(d){
+                    return d.value
+                })
+    });
+
+
+</script>
+
+</body>
+</html>
