@@ -3,7 +3,6 @@
 
 <head>
     <style>
-
         .axis {
             font: 12px sans-serif;
             fill: green;
@@ -15,25 +14,23 @@
             stroke: red;
             shape-rendering: crispEdges;
         }
-
     </style>
 </head>
-
 <body>
 
-<script type="text/javascript" src="/d3/app/lib/d3/d3.min.js"></script>
 
+<script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+<script src="/lib/lodash/lodash.min.js"></script>
 <script>
 
     var margin = {top: 20, right: 20, bottom: 70, left: 40},
-            width = 600 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+        width = 600 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
 
     // Parse the date / time
     var parseDate = d3.time.format("%Y-%m").parse;
 
     var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.1);
-
     var y = d3.scale.linear().range([height, 0]);
 
     var xAxis = d3.svg.axis()
@@ -46,17 +43,19 @@
             .orient("left")
             .ticks(10);
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("body")
+            .append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    d3.csv("bar-data.csv", function(error, data) {
+    d3.csv("/data/bar-data.csv", function(error, data) {
         data.forEach(function(d) {
             d.date = parseDate(d.date);
             d.value = +d.value;
         });
+
 
         x.domain(data.map(function(d) { return d.date; }));
         y.domain([0, d3.max(data, function(d) { return d.value; })]);

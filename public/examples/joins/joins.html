@@ -41,21 +41,6 @@
                 .selectAll("circle")
                 .data(data);
 
-        // update existing
-        circles.attr("r", function (d) {
-                    return d * 20;
-                })
-                .attr("cx", function (d) {
-                    return d * 100;
-                })
-                .attr("cy", function (d) {
-                    return d * 100
-
-                })
-                .attr("class", function (d,i) {
-                    return 'circle'+(++i);
-                });
-
 
         // Enter (new items)
         circles.enter().append("circle")
@@ -72,6 +57,24 @@
                 .attr("class", function (d,i) {
                     return 'circle'+(++i);
                 });
+
+        // update existing
+        circles.attr("r", function (d) {
+                    return d * 20;
+                })
+                .attr("cx", function (d) {
+                    return d * 100;
+                })
+                .attr("cy", function (d) {
+                    return d * 100
+
+                })
+                .attr("class", function (d,i) {
+                    return 'circle'+(++i);
+                });
+
+
+
 
         // Exit (remove spares)
         circles.exit().remove();

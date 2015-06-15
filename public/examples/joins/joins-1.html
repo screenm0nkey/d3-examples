@@ -19,17 +19,20 @@
     var p = d3.select("section").selectAll("p")
             .data([4, 8, 15, 17]);
 
-    // Update…
-    p.text(function(d){ return d})
-            .append('span')
-            .text(' - Update')
-
 
     // Enter… (new items)
     p.enter().append("p")
             .text(function(d){ return d})
             .append('span')
             .text(' - Enter')
+
+
+    // Update…
+    p.text(function(d){ return d})
+            .append('span')
+            .text(' - Update')
+
+
 
     // Exit…
     p.exit().remove();

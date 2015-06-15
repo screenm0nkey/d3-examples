@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>D3 - Data Driven Documents</title>
-    <script type="text/javascript" src="../lib/d3/d3.min.js"></script>
-    <script src="../lib/lodash/lodash.min.js"></script>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+    <script src="/lib/lodash/lodash.min.js"></script>
     <style type="text/css">
 
         body {
@@ -22,7 +22,6 @@
             width: 20px;
             height: 75px; /* Gets overriden by D3-assigned height below */
             margin-right: 2px;
-            fill: teal;
         }
 
     </style>
@@ -31,42 +30,44 @@
 <div id="chartArea"></div>
 <script type="text/javascript">
 
-    var dataset = _.map(_.range(15), function (i) {
+    var data = _.map(_.range(30), function (i) {
         // these will be used as Y values
-        return Math.random() * 50;
+        return Math.random() * 30;
     });
+    var yPaddingTop = 10;
     var barHeights = 9;
     var height = 300;
     var width = 400;
-    var topPadding = 1.05;
 
     var svg = d3.select('#chartArea').append('svg')
             .attr('width', width)
             .attr('height', height);
 
-    var yScale = d3.scale.linear()
-            .domain([0, d3.max(dataset) * topPadding])
-            .range([0, height]);
 
+    var x = d3.scale.ordinal()
+            .domain(data)
+            .rangeBands([0, width], 0.1);
+
+    var y = d3.scale.linear()
+            .domain([0,  d3.max(data)])
+            .range([height, 0]);
+
+
+
+    var colourScale = d3.scale.linear()
+            .domain([0,  d3.max(data)])
+            .range(['orange', 'purple']);
 
     svg.selectAll('rect')
-            .data(dataset)
+            .data(data)
             .enter()
             .append('rect')
-            .attr('class', 'bar')
-        // left to right
-            .attr('x', function (d, i) {
-                return i * 22;
-            })
-            .attr('y', function (d) {
-                // this puts the chart on the bottom of the page.
-                // comment it out to see what happens
-                return height - yScale(d);
-            })
-            .attr('width', 20)
-            .attr('height', function (d) {
-                return yScale(d);
-            });
+            .attr('width', Math.round(x.rangeBand()))
+            .attr('x', function (d){ return x(d);})
+            .attr('height', function (d){ return y(d);})
+            .attr('y', function (d){ return height - y(d);})
+            .style('fill', colourScale)
+
 
 </script>
 </body>

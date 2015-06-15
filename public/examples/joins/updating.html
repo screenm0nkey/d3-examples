@@ -16,18 +16,19 @@
 
 
 <script>
-    update
+    // update
     var p = d3.select("body").selectAll("p")
             .data([4, 8, 15, 16, 23, 42, 200]);
+
+    // Enter…
+    p.enter().append("p").text('hello');
 
     // update
     p.text(function(d, i){
         return d +'-Nick-' + i;
     });
 
-    // Enter…
-    p.enter().append("p")
-            .text('hello');
+
 
     // Exit…
     p.exit().remove();

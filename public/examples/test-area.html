@@ -4,28 +4,97 @@
     <meta charset="UTF-8">
     <title>First d3</title>
     <link rel="stylesheet" href="/css/global.css"/>
+    <style>
+        .axis text {
+            font: 10px sans-serif;
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .x.axis path {
+            /*display: none;*/
+        }
+    </style>
     <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
 </head>
-<body> <a href="/basics"></a>
+<body>
+<div id="chartArea"></div>
 
-<section>
-    <p>1</p>
-    <p>2</p>
-    <p>3</p>
-</section>
 
 <script>
-    // Update…
-    var p = d3.select("section").selectAll("p")
-            .data([4, 8, 15, 17])
+    var margin = {top: 20, right: 30, bottom: 30, left: 40};
+    var width = 600 - margin.left - margin.right;
+    var height = 400 - margin.top - margin.bottom;
+
+    var y = d3.scale.linear().range([height, 0]);
+    var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.1);
+
+    var yAxis = d3.svg.axis().scale(y).orient("left");
+    var xAxis = d3.svg.axis().scale(x).orient("bottom");
 
 
-    // Enter… (new items)
-    p.enter().append("p")
-            .text(function(d){ return d});
+    var chart = d3.select('body')
+            .append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('class', 'chart')
+            .append('g')
+            .attr('class', 'inner')
+            .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
-    // Exit…
-    p.exit().remove();
+
+    d3.tsv('/data/alphabet.tsv', type, function (error, data) {
+        y.domain([0, d3.max(data, function (d) {
+            return d.value;
+        })]);
+
+        x.domain(data.map(function (d) {
+            return d.name;
+        }));
+
+        chart.append('g')
+                .attr({
+                    'class': 'x axis',
+                    transform: "translate(0," + (height + 4) + ')'
+                })
+                .call(xAxis);
+
+        chart.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis);
+
+        chart.selectAll('.bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr({
+                    'class': 'bar',
+                    'x': function (d) {
+                        return x(d.name)
+                    },
+                    width: x.rangeBand(),
+                    'y': function (d) {
+                        return y(d.value);
+                    },
+                    height: function (d) {
+                        return height - y(d.value);
+                    }
+
+
+                })
+
+    });
+
+
+    function type(d) {
+        d.value = +d.value;
+        return d;
+    }
+
 </script>
 </body>
 </html>
