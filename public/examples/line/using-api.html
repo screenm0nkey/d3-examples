@@ -50,7 +50,9 @@
 
 
     function buildLineChart(data) {
+        var lineFunction = d3.svg.line();
         var monthlySales = data.monthlySales;
+
         var max = d3.max(monthlySales, function(d){
             return d.sales;
         });
@@ -61,7 +63,22 @@
 
         y.domain([min, max]);
 
-        svgContainer.selectAll('text')
+        lineFunction
+                .x(function(d){ return x(getMonth(d.month)); })
+                .y(function (d) { return y(d.sales)})
+                .interpolate("linear");
+
+        // line
+        svgContainer
+                .append("path")
+                .attr("d", lineFunction(monthlySales))
+                .attr("stroke", "blue")
+                .attr("stroke-width", 2)
+                .attr("fill", "none");
+
+        //labels
+        svgContainer
+                .selectAll('text')
                 .data(monthlySales)
                 .enter()
                 .append('text')
@@ -69,22 +86,11 @@
                 .attr({
                     x : function(d){ return x(getMonth(d.month)); },
                     y : function (d) { return y(d.sales)}
-                })
+                });
 
-
-        var lineFunction = d3.svg.line()
-                .x(function(d){ return x(getMonth(d.month)); })
-                .y(function (d) { return y(d.sales)})
-                .interpolate("linear");
-
-
-        var lineGraph = svgContainer.append("path")
-                .attr("d", lineFunction(monthlySales))
-                .attr("stroke", "blue")
-                .attr("stroke-width", 2)
-                .attr("fill", "none");
-
-        svgContainer.append('g')
+        //axis
+        svgContainer
+                .append('g')
                 .attr('transform', "translate(30,0)")
                 .attr('class', 'y axis')
                 .call(yAxis);
@@ -92,12 +98,10 @@
 
     }
 
-    d3.json('https://api.github.com/repos/bsullins/d3js-resources/contents/monthlySalesbyCategoryMultiple.json', function(data){
-
+    d3.json('/data/monthlySalesbyCategoryMultiple.json', function(data){
         data = JSON.parse(window.atob(data.content)).contents;
         buildLineChart(data[0]);
-
-    })
+    });
 
 
 
