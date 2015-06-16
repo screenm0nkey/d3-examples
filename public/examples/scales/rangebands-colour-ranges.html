@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ordinal scale - rangeRoundBands</title>
+    <style type="text/css">
+        body {
+            text-align: center;
+        }
+        svg {
+            border: 1px solid #f90;
+            margin: 32px;
+        }
+    </style>
+</head>
+<body>
+
+<svg></svg>
+
+<script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+<script type="text/javascript">
+    var width = 640,
+            height = 320
+
+    var svg = d3.select('svg')
+            .attr('width', width)
+            .attr('height', height)
+
+    var data = d3.range(51)
+
+
+    //RANGEROUNDBANDS
+    var x = d3.scale.ordinal()
+            .domain(data)
+            .rangeRoundBands([0, width], 0.1)
+
+    var colors = d3.scale.category20()
+
+    // heading
+    svg.append('text').text('rangeRoundBands()').attr('y', 50);
+
+    svg.selectAll('rect.example1')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr('class', 'example1')
+            .style('fill', colors)
+            .attr('x', function(d) { return x(d) })
+            .attr('y', 50)
+            .attr('width', x.rangeBand())
+            .attr('height', 50);
+
+
+
+    //RANEGBANDS
+
+    var x = d3.scale.ordinal()
+            .domain(data)
+        // 0.1 is the width between the bars
+        // 0.5 is the distance left and right from the edge.
+        // the values are a percentage of the bar width, so it 0.1 is 10% width of the actual bar width.
+        // if we set the values to "[0, width] 0.5, 0.5" then all the distances and bar width would be equal
+            .rangeBands([0, width], 0.1, 0.5);
+
+    // heading
+    svg.append('text').text('rangeBands()').attr('y', 150);
+
+    svg.selectAll('rect.example2')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr('class', 'example2')
+            .style('fill', colors)
+            .attr('x', function(d) { return Math.round(x(d)) })
+            .attr('y', 150)
+            .attr('width', Math.round(x.rangeBand()))
+            .attr('height', 50)
+
+
+</script>
+
+</body>
+</html>

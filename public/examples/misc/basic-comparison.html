@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>First d3</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+</head>
+<body>
+<a href="/basics"></a>
+<a href="http://nrecursions.blogspot.in/2014/12/getting-your-head-around-d3js-part2.html">site</a>
+
+<script>
+    // USING NATIVE JS to create SVG elements
+    var svgHolder = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgHolder.setAttribute("height",500);
+    svgHolder.setAttribute("width",700);
+    document.body.appendChild(svgHolder);
+
+    for(var i = 0; i < 10; i++) {
+        var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("id", "c" + i)
+        circle.setAttribute("cx", (i + 1) * 50)
+        circle.setAttribute("cy", 100)
+        circle.setAttribute("r", (i + 1) * 10)
+        circle.setAttribute("stroke", "black")
+        circle.setAttribute("stroke-width", "3")
+        circle.setAttribute("fill", "red");
+        svgHolder.appendChild(circle);
+    }
+
+    // USING D3
+    var data = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10"];
+    var svgHolder = d3.select("body") //select the body tag
+            .append("svg") //add an svg tag to body
+            .attr("width", 700) //specify the svg tag properties
+            .attr("height", 500);
+
+    svgHolder.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle") //add an svg circle
+            .attr("id", function(d) {return d;})
+            .attr("cx", function(d,i) {return (i+1)*50;})
+            .attr("cy", 110)
+            .attr("r", function(d,i) {return (i+1)*10;})
+            .attr("stroke", "black")
+            .attr("stroke-width", "3")
+            .attr("fill", "blue");
+</script>
+</body>
+</html>

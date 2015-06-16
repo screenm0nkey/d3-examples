@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>First d3</title>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+</head>
+<body> <a href="/basics"></a>
+<a href="http://nrecursions.blogspot.in/2014/11/getting-your-head-around-d3js.html">site</a>
+
+<div id="test"></div>
+
+<svg height="100" width="100">
+    <circle cx="50" cy="50" fill="red" r="40" stroke-width="3" stroke="black"></circle>
+</svg>
+
+
+<script>
+    d3.select('#test').text('some test');
+
+    // no need to use enter() below as there is no data. just asingle element
+    var abc = d3.select("body") //select the body tag
+            .append("svg") //add an svg tag to body
+            .attr("width", 100) //specify the svg tag properties
+            .attr("height", 100)
+            .append("circle") //add an svg circle
+            .attr("cx", 50) //specify properties of the circle
+            .attr("cy", 50)
+            .attr("r", 40)
+            .attr("stroke", "black")
+            .attr("stroke-width", "3")
+            .attr("fill", "blue");
+
+</script>
+</body>
+</html>

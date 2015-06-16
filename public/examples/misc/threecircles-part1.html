@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Three Circles Part 1</title><script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+    <link rel="stylesheet" href="/css/global.css"/>
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body> <a href="/basics"></a>
+<a href="http://bost.ocks.org/mike/circles/">http://bost.ocks.org/mike/circles/</a><br/>
+<a href="#" id="dance">make circle dance</a>
+
+
+<svg width="720" height="120">
+    <circle cx="40" cy="60" r="10"></circle>
+    <circle cx="80" cy="60" r="10"></circle>
+    <circle cx="120" cy="60" r="10"></circle>
+</svg>
+
+
+<script>
+    var svg = d3.select("svg");
+    var circles = svg.selectAll("circle");
+
+
+    circles.style("fill", "steelblue");
+    circles.attr("r", 30);
+    // you dont have to attach the data unless you're going to use it to add more elements or
+    // use it to size them as in Math.sqrt(d);
+    circles.data([32, 57, 112]);
+
+    setTimeout(function () {
+        circles.transition()
+                .duration(500)
+                .attr("r", function (d) {
+                    return Math.sqrt(d);
+                });
+    }, 500);
+
+    setTimeout(function () {
+        circles.transition()
+                .duration(500)
+                .style("fill", "pink")
+                .attr("cx", function (d, i) {
+                    return i * 100 + 30;
+                });
+    }, 1000);
+
+
+    document.getElementById('dance').addEventListener('click', function (evt) {
+        evt.preventDefault();
+        setInterval(function () {
+            circles.attr("cx", function () {
+                return Math.random() * 720;
+            });
+        }, 500)
+    });
+
+
+</script>
+</body>
+</html>
