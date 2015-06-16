@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        path {
+            fill: purple;
+            fill-opacity: 0.7;
+        }
+
+        #chart {
+            width: 300px;
+            height: 200px;
+            border: 1px solid black;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="updateChart('math')">Math</button>
+<button onclick="updateChart('science')">Science</button>
+<button onclick="updateChart('reading')">Reading</button>
+
+<div id="chart"></div>
+
+
+
+<script src="/lib/lodash/lodash.js"></script>
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="/lib/d3/d3.min.js"></script>
+<script>
+    var w = 300;
+    var h = 200;
+    var path;
+    var subjects;
+
+    $.getJSON('/data/vegaqi.json', function (json) {
+        subjects = json;
+
+        _.keys(subjects).forEach(function (subject) {
+            subjects[subject].forEach(function (d) {
+                d.date = d3.time.format("%Y%m%d").parse(d.date);
+            });
+        });
+
+        path = d3
+                .select('#chart')
+                .append('svg')
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .append('g')
+                .append('path');
+
+        updateChart('math');
+    });
+
+    function updateChart (subject) {
+        var data = subjects[subject];
+        var dates = _.pluck(data, 'date');
+        var counts = _.pluck(data, 'count');
+
+        var x = d3.time.scale()
+                .domain(d3.extent(dates))
+                .range([0, w]);
+
+        var y = d3.scale.linear()
+                .domain(d3.extent(counts))
+                .range([h, 0]);
+
+        var area = d3.svg.area()
+                .interpolate('bundle')
+                .x(function (d) {
+                    return x(d.date);
+                })
+                .y0(function (d) {
+                    return y(0);
+                })
+                .y1(function (d) {
+                    return y(d.count);
+                });
+
+        path
+                .datum(data)
+                .transition()
+                .duration(450)
+                .attr('d', area);
+    }
+
+</script>
+</body>
+</html>
