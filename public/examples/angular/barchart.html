@@ -29,58 +29,60 @@
 </head>
 <body>
 <div ng-app="myApp" ng-controller="Ctrl">
-    <bars-chart chart-data="myData"></bars-chart>
+    <bar-chart chart-data="myData"></bar-chart>
 </div>
 
 <script type="text/javascript" src="/lib/d3/d3.min.js"></script>
 <script type="text/javascript" src="/lib/lodash/lodash.js"></script>
 <script type="text/javascript" src="/lib/angular/angular.js"></script>
 <script>
-    angular.module('myApp', []).
-            directive('barsChart', function ($parse) {
-                var directiveDefinitionObject = {
-                    restrict: 'E',
-                    //this is important,
-                    //we don't want to overwrite our directive declaration
-                    //in the HTML mark-up
-                    replace: false,
-                    scope: {
-                        data: '=chartData'
-                    },
-                    link: function (scope, element, attrs) {
-                        //in D3, any selection[0] contains the group
-                        //selection[0][0] is the DOM node
-                        //but we won't need that this time
-                        var chart = d3.select(element[0]);
-                        //to our original directive markup bars-chart
-                        //we add a div with out chart stling and bind each
-                        //data entry to the chart
-                        chart.append("div").attr("class", "chart")
-                                .selectAll('div')
-                                .data(scope.data)
-                                .enter().append("div")
-                                .transition().ease("elastic")
-                                .style("width", function (d) {
-                                    return d + "%";
-                                })
-                                .text(function (d) {
-                                    return d + "%";
-                                });
-                        //a little of magic: setting it's width based
-                        //on the data value (d)
-                        //and text all with a smooth transition
-                    }
-                };
-                return directiveDefinitionObject;
+    function buildChart(data) {
+        // data join
+        var divs = d3.select('.chart')
+                .selectAll('div')
+                .data(data);
+
+        // enter
+        divs
+            .enter()
+            .append('div');
+
+        // update
+        divs
+            .transition().ease("elastic")
+            .style("width", function (d) {
+                return d + "%";
+            })
+            .text(function (d) {
+                return d + "%";
             });
+    }
 
-    angular.module('myApp').controller('Ctrl', function ($scope, $interval) {
-        $scope.myData = [10, 20, 30, 40, 50];
+    angular.module('myApp', [])
+        .directive('barChart', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                template: '<div class="chart"></div>',
+                scope: {
+                    data: '=chartData'
+                },
+                link: function (scope) {
+                    scope.$watchCollection('data', function (val) {
+                        if (val) {
+                            buildChart(val)
+                        }
+                    })
+                }
+            };
+        })
+        .controller('Ctrl', function ($scope, $interval) {
+            $scope.myData = [10, 20, 30, 40, 50];
 
-        $interval(function () {
-            $scope.myData = _.times(5, _.partial(_.random, 10, 50, false));
-        }, 2000)
-    })
+            $interval(function () {
+                $scope.myData = _.times(5, _.partial(_.random, 10, 50, false));
+            }, 2000)
+        })
 
 </script>
 </body>
